@@ -79,17 +79,17 @@ class Push(object):
         """
 
         if method in self.push_methods or not method:
-            if not method:
+            if method:
+                if platform not in self.push_methods[method][0]:
+                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
+
+            else:
                 for push_method in self.push_methods:
                     if platform in self.push_methods[push_method][0]:
                         method = push_method
 
-                if not method:
-                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
-            else:
-                if platform not in self.push_methods[method][0]:
-                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
-
+            if not method:
+                raise RuntimeError(f"No supported post methods found for {platform} platform!")
             self.push_methods[method][1].push(
                 sender=sender,
                 data=data,

@@ -46,15 +46,12 @@ class FTPSocket(object):
         super().__init__()
 
         self.host = host
-        self.port = int(port)
+        self.port = port
 
-        self.pair = f"{self.host}:{str(self.port)}"
+        self.pair = f"{self.host}:{self.port}"
         self.timeout = float(timeout)
 
-        if ssl:
-            self.client = ftplib.FTP_TLS()
-        else:
-            self.client = ftplib.FTP()
+        self.client = ftplib.FTP_TLS() if ssl else ftplib.FTP()
 
     def connect(self) -> None:
         """ Connect to FTP socket.

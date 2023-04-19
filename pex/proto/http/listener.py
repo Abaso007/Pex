@@ -39,7 +39,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         pass
 
     def send_status(self, code: int = 200) -> None:
-        self.send_response(int(code))
+        self.send_response(code)
         self.send_header("Content-type", "text/html")
         self.end_headers()
 
@@ -67,7 +67,7 @@ class HTTPListen(object):
         self.handler = Handler
 
         self.host = host
-        self.port = int(port)
+        self.port = port
 
         self.sock = None
         self.methods = methods
@@ -97,7 +97,7 @@ class HTTPListen(object):
         try:
             self.sock.server_close()
         except Exception:
-            raise RuntimeError(f"HTTP listener is not started!")
+            raise RuntimeError("HTTP listener is not started!")
 
     def accept(self) -> None:
         """ Accept connection.
@@ -109,7 +109,7 @@ class HTTPListen(object):
         try:
             self.sock.handle_request()
         except Exception:
-            raise RuntimeError(f"HTTP listener is not started!")
+            raise RuntimeError("HTTP listener is not started!")
 
 
 class HTTPListener(object):

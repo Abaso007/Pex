@@ -63,10 +63,7 @@ class BitReader(object):
         :return int: represented bit
         """
 
-        res = 0
-        for i in range(num):
-            res += self.getBit() << num - 1 - i
-        return res
+        return sum(self.getBit() << num - 1 - i for i in range(num))
 
     def get_byte(self) -> int:
         """ Get represented byte.

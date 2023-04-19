@@ -93,6 +93,4 @@ class RingList(object):
         :return Any: an item
         """
 
-        if n >= self.size():
-            return None
-        return self.__data__[n]
+        return None if n >= self.size() else self.__data__[n]

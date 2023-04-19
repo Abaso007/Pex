@@ -63,10 +63,7 @@ class TCPTools(object):
         :return str: local host
         """
 
-        if host in ['0.0.0.0']:
-            return self.get_local_host()
-
-        return host
+        return self.get_local_host() if host in {'0.0.0.0'} else host
 
     @staticmethod
     def check_tcp_port(host: str, port: int, timeout: int = 1) -> bool:
@@ -81,6 +78,6 @@ class TCPTools(object):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(timeout)
 
-            if sock.connect_ex((host, int(port))) == 0:
+            if sock.connect_ex((host, port)) == 0:
                 return True
         return False

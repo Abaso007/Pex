@@ -112,6 +112,6 @@ class BluetoothClient:
         scanner = BTLEScanner(mac).withDelegate(ScanDelegate(options))
 
         try:
-            return [result for result in scanner.scan(time)]
+            return list(scanner.scan(time))
         except Exception:
             return None

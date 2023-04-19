@@ -144,29 +144,28 @@ class ChannelSocket(object):
         :raises RuntimeError: with trailing error message
         """
 
-        if self.sock.sock:
-            token = token.encode()
-            data = self.stash().decode(errors='ignore')
+        if not self.sock.sock:
+            raise RuntimeError("Socket is not connected!")
+        token = token.encode()
+        data = self.stash().decode(errors='ignore')
+
+        if printer != print:
+            printer(data, start='', end='')
+        else:
+            printer(data, end='')
+
+        while True:
+            data = self.read(self.read_size)
+            block, stash = self.channel_tools.token_extract(data, token)
 
             if printer != print:
-                printer(data, start='', end='')
+                printer(block.decode(errors='ignore'), start='', end='')
             else:
-                printer(data, end='')
+                printer(block.decode(errors='ignore'), end='')
 
-            while True:
-                data = self.read(self.read_size)
-                block, stash = self.channel_tools.token_extract(data, token)
-
-                if printer != print:
-                    printer(block.decode(errors='ignore'), start='', end='')
-                else:
-                    printer(block.decode(errors='ignore'), end='')
-
-                if block != data:
-                    self.stashed = stash
-                    break
-        else:
-            raise RuntimeError("Socket is not connected!")
+            if block != data:
+                self.stashed = stash
+                break
 
     def read_until(self, token: str) -> bytes:
         """ Read data from the channel socket until specific token.
@@ -259,33 +258,30 @@ class ChannelSocket(object):
         :raises RuntimeError: with trailing error message
         """
 
-        if self.sock.sock:
-            selector = selectors.SelectSelector()
-
-            selector.register(self.sock, selectors.EVENT_READ)
-            selector.register(sys.stdin, selectors.EVENT_READ)
-
-            while True:
-                for key, events in selector.select():
-                    if key.fileobj is self.sock:
-                        try:
-                            response = self.stash() + self.sock.read_eager()
-                        except Exception:
-                            self.terminated = True
-                            raise RuntimeError("Channel closed connection unexpectedly!")
-
-                        if response:
-                            print(response.decode(errors='ignore'), end='')
-
-                    elif key.fileobj is sys.stdin:
-                        line = sys.stdin.readline().strip()
-                        if not line:
-                            pass
-                        if line == "quit":
-                            return
-                        self.sock.write((line + terminator).encode())
-        else:
+        if not self.sock.sock:
             raise RuntimeError("Socket is not connected!")
+        selector = selectors.SelectSelector()
+
+        selector.register(self.sock, selectors.EVENT_READ)
+        selector.register(sys.stdin, selectors.EVENT_READ)
+
+        while True:
+            for key, events in selector.select():
+                if key.fileobj is self.sock:
+                    try:
+                        response = self.stash() + self.sock.read_eager()
+                    except Exception:
+                        self.terminated = True
+                        raise RuntimeError("Channel closed connection unexpectedly!")
+
+                    if response:
+                        print(response.decode(errors='ignore'), end='')
+
+                elif key.fileobj is sys.stdin:
+                    line = sys.stdin.readline().strip()
+                    if line == "quit":
+                        return
+                    self.sock.write((line + terminator).encode())
 
 
 class ChannelClient(object):

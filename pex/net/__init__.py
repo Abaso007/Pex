@@ -67,9 +67,7 @@ class Net(object):
                 addrs = addrs[socket.AF_INET][0]
 
                 if 'addr' in addrs and 'netmask' in addrs:
-                    gateways.append(str(netaddr.IPNetwork(
-                        '%s/%s' % (addrs['addr'], addrs['netmask']))
-                    ))
+                    gateways.append(str(netaddr.IPNetwork(f"{addrs['addr']}/{addrs['netmask']}")))
 
         return gateways
 
@@ -95,16 +93,12 @@ class Net(object):
             ether = Ether(dst='ff:ff:ff:ff:ff:ff', src=Ether().src)
 
             packet = ether / arp
-            result = srp(packet, timeout=self.srp_timeout, verbose=0)[0]
-
-            if result:
+            if result := srp(packet, timeout=self.srp_timeout, verbose=0)[0]:
                 return result[0][1].hwsrc
 
         elif method.lower() == 'icmp':
             icmp = IP(dst=host) / ICMP()
-            response = sr1(icmp, timeout=self.sr1_timeout, verbose=0)
-
-            if response:
+            if response := sr1(icmp, timeout=self.sr1_timeout, verbose=0):
                 return True
 
     def get_top_ports(self, host: str) -> dict:
@@ -186,9 +180,7 @@ class Net(object):
 
         try:
             m = manuf.MacParser()
-            vendor = m.get_manuf_long(mac)
-
-            if vendor:
+            if vendor := m.get_manuf_long(mac):
                 return vendor
 
         except Exception:

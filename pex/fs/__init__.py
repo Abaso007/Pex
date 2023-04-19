@@ -48,14 +48,10 @@ class FS(object):
 
         if os.path.isdir(path):
             return True, True
-        directory = os.path.split(path)[0]
-
-        if not directory:
+        if directory := os.path.split(path)[0]:
+            return (True, False) if os.path.isdir(directory) else (False, False)
+        else:
             return True, False
-
-        if os.path.isdir(directory):
-            return True, False
-        return False, False
 
     @staticmethod
     def check_dir(path: str) -> None:

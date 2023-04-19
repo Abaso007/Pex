@@ -52,8 +52,7 @@ class String(object):
         :return list: list of extracted strings
         """
 
-        strings = re.findall("[^\x00-\x1F\x7F-\xFF]{4,}", binary_data)
-        return strings
+        return re.findall("[^\x00-\x1F\x7F-\xFF]{4,}", binary_data)
 
     @staticmethod
     def xor_string(string: str) -> str:
@@ -63,10 +62,7 @@ class String(object):
         :return str: XOR encrypted string
         """
 
-        result = ""
-        for c in string:
-            result += chr(ord(c) ^ len(string))
-        return result
+        return "".join(chr(ord(c) ^ len(string)) for c in string)
 
     @staticmethod
     def xor_key_string(string: str, key: str) -> str:
@@ -88,7 +84,7 @@ class String(object):
         :return bytes: key XOR encrypted buffer
         """
 
-        return bytes([a ^ b for a, b in zip(buffer, cycle(key))])
+        return bytes(a ^ b for a, b in zip(buffer, cycle(key)))
 
     @staticmethod
     def base64_decode(string: str, decode: bool = True) -> Union[str, bytes]:
