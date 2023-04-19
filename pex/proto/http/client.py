@@ -68,7 +68,7 @@ class HTTPClient(object):
         kwargs.setdefault("allow_redirects", True)
 
         if not ssl:
-            ssl = int(port) in [443]
+            ssl = port in {443}
 
         url = self.http_tools.normalize_url(host, port, path, ssl)
 

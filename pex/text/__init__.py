@@ -74,7 +74,7 @@ class Text(object):
         bits = format(val, '032b')
         bits = list(bits)
 
-        for c in range(cnt):
+        for _ in range(cnt):
             bits.insert(0, bits.pop())
 
         bits = ''.join(bits)

@@ -56,15 +56,15 @@ class Printf(object):
         printf_max_length = linemax
 
         size = len(data)
-        num_parts = int(size / printf_max_length) + 1
+        num_parts = size // printf_max_length + 1
 
         with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
+            for i in range(num_parts):
                 bar()
 
                 current = i * printf_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
-
-                if block:
+                if block := self.post_tools.bytes_to_octal(
+                    data[current : current + printf_max_length]
+                ):
                     command = printf_stream.format(block, location)
                     self.post_tools.post_command(sender, command, args)

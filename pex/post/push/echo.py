@@ -56,15 +56,15 @@ class Echo(object):
         echo_max_length = linemax
 
         size = len(data)
-        num_parts = int(size / echo_max_length) + 1
+        num_parts = size // echo_max_length + 1
 
         with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
+            for i in range(num_parts):
                 bar()
 
                 current = i * echo_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + echo_max_length], True)
-
-                if block:
+                if block := self.post_tools.bytes_to_octal(
+                    data[current : current + echo_max_length], True
+                ):
                     command = echo_stream.format(block, location)
                     self.post_tools.post_command(sender, command, args)

@@ -67,17 +67,17 @@ class Pull(object):
         """
 
         if method in self.pull_methods or not method:
-            if not method:
+            if method:
+                if platform not in self.pull_methods[method][0]:
+                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
+
+            else:
                 for pull_method in self.pull_methods:
                     if platform in self.pull_methods[pull_method][0]:
                         method = pull_method
 
-                if not method:
-                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
-            else:
-                if platform not in self.pull_methods[method][0]:
-                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
-
+            if not method:
+                raise RuntimeError(f"No supported post methods found for {platform} platform!")
             return self.pull_methods[method][1].pull(
                 sender=sender,
                 location=location,

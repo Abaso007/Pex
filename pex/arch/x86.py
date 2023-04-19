@@ -260,11 +260,11 @@ class X86(object):
 
         s = str(num)
 
-        if s[0:2] == '$+':
+        if s.startswith('$+'):
             num = int(s[2:])
-        elif s[0:2] == '$-':
+        elif s.startswith('$-'):
             num = -1 * int(s[2:])
-        elif s[0:2] == '0x':
+        elif s.startswith('0x'):
             num = int(s, 16)
         else:
             delta = 0
@@ -348,10 +348,5 @@ class X86(object):
         [fpus.append(b"\xdb" + bytes([i])) for i in range(0xc0, 0xe0)]
         [fpus.append(b"\xdd" + bytes([i])) for i in range(0xc0, 0xc8)]
 
-        fpus.append(b"\xd9\xd0")
-        fpus.append(b"\xd9\xe1")
-        fpus.append(b"\xd9\xf6")
-        fpus.append(b"\xd9\xf7")
-        fpus.append(b"\xd9\xe5")
-
+        fpus.extend((b"\xd9\xd0", b"\xd9\xe1", b"\xd9\xf6", b"\xd9\xf7", b"\xd9\xe5"))
         return fpus

@@ -44,9 +44,9 @@ class SNMPSocket(object):
         super().__init__()
 
         self.host = host
-        self.port = int(port)
+        self.port = port
 
-        self.pair = f"{self.host}:{str(self.port)}"
+        self.pair = f"{self.host}:{self.port}"
         self.timeout = float(timeout)
 
     def get(self, community: str, oid: str, version: int = 1, retries: int = 0) -> bytes:

@@ -44,11 +44,4 @@ class HTTPTools(object):
         :return str: normalized URL
         """
 
-        if ssl:
-            url = "https://"
-        else:
-            url = "http://"
-
-        url += "{}:{}{}".format(host, str(port), path)
-
-        return url
+        return ("https://" if ssl else "http://") + f"{host}:{port}{path}"

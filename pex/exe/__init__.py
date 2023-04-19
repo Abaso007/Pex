@@ -66,11 +66,7 @@ class EXE(object):
         if executable in exe_map:
             return exe_map[executable](data)
 
-        for executable in exe_map:
-            if exe_map[executable](data):
-                return True
-
-        return False
+        return any(value(data) for value in exe_map.values())
 
     def executable_replace(self, data: bytes, dst: bytes, src: bytes) -> bytes:
         """ Replace string in executable with content.

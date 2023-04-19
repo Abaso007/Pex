@@ -142,13 +142,12 @@ class DB(object):
             OR ZTOJID like "%{partner}%"
         '''.format(partner=partner))
 
-        all_messages_dict = list(map(dict, cursor.fetchall()))
-        if len(all_messages_dict) > 0:
+        if all_messages_dict := list(map(dict, cursor.fetchall())):
             for message in all_messages_dict:
                 if message["text"] is None:
                     message["text"] = "<unknown message type>"
 
-                message["is_from_me"] = True if message["is_from_me"] == 1 else False
+                message["is_from_me"] = message["is_from_me"] == 1
                 if message["message_type"] == 0:
                     message["message_type"] = "text"
                 elif message["message_type"] == 7:
@@ -183,10 +182,10 @@ class DB(object):
         partner = partner.replace(" ", "")
         db = sqlite3.connect(database)
         result_arr = {
-            "protocol": "{}".format('iMessage' if imessage else 'SMS'),
+            "protocol": f"{'iMessage' if imessage else 'SMS'}",
             "partner": partner,
             "success": True,
-            "data": []
+            "data": [],
         }
 
         db.row_factory = sqlite3.Row
@@ -234,11 +233,6 @@ class DB(object):
         :return list: list of entries from Apple iOS voicemail database
         """
 
-        result_arr = {
-            "total": 0,
-            "data": []
-        }
-
         db = sqlite3.connect(database)
         db.row_factory = sqlite3.Row
 
@@ -251,7 +245,7 @@ class DB(object):
             FROM voicemail
             ORDER BY date''')
 
-        result_arr["data"] = list(map(dict, cursor.fetchall()))
+        result_arr = {"total": 0, "data": list(map(dict, cursor.fetchall()))}
         result_arr["total"] = len(result_arr["data"])
 
         return result_arr

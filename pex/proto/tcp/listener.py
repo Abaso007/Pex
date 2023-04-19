@@ -44,7 +44,7 @@ class TCPListen(object):
         super().__init__()
 
         self.host = host
-        self.port = int(port)
+        self.port = port
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

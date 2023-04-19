@@ -44,9 +44,9 @@ class TCPSocket(object):
         super().__init__()
 
         self.host = host
-        self.port = int(port)
+        self.port = port
 
-        self.pair = f"{self.host}:{str(self.port)}"
+        self.pair = f"{self.host}:{self.port}"
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(timeout)

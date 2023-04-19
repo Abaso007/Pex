@@ -68,24 +68,24 @@ class Post(object):
         :raises RuntimeError: with trailing error message
         """
 
-        platforms = self.type_tools.platforms
-        architectures = self.type_tools.architectures
-
         if method in self.post_methods or not method:
-            if not method:
+            if method:
+                if platform not in self.post_methods[method][0]:
+                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
+
+            else:
                 for post_method in self.post_methods:
                     if platform in self.post_methods[post_method][0]:
                         method = post_method
                         break
 
-                if not method:
-                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
-            else:
-                if platform not in self.post_methods[method][0]:
-                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
-
+            if not method:
+                raise RuntimeError(f"No supported post methods found for {platform} platform!")
             filename = self.string_tools.random_string(8)
-            arguments = '' if not arguments else arguments
+            arguments = arguments if arguments else ''
+
+            platforms = self.type_tools.platforms
+            architectures = self.type_tools.architectures
 
             if platform in platforms['unix']:
                 if not location:
@@ -95,7 +95,7 @@ class Post(object):
                 if not background:
                     background = '&'
 
-                path = location + '/' + filename
+                path = f'{location}/{filename}'
 
                 if architecture in architectures['cpu']:
                     command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"

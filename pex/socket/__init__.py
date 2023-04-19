@@ -76,7 +76,7 @@ class Socket(object):
         :return int: converted port
         """
 
-        return socket.htons(int(port))
+        return socket.htons(port)
 
     @staticmethod
     def host(host: str) -> int:

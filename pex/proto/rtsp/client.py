@@ -46,9 +46,9 @@ class RTSPSocket(object):
         super().__init__()
 
         self.host = host
-        self.port = int(port)
+        self.port = port
 
-        self.pair = f"rtsp://{self.host}:{str(self.port)}"
+        self.pair = f"rtsp://{self.host}:{self.port}"
         self.string = String()
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -62,16 +62,14 @@ class Certutil(object):
         data = self.string_tools.base64_string(data, decode=False)
 
         size = len(data)
-        num_parts = int(size / echo_max_length) + 1
+        num_parts = size // echo_max_length + 1
 
         with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
+            for i in range(num_parts):
                 bar()
 
                 current = i * echo_max_length
-                block = data[current:current + echo_max_length]
-
-                if block:
+                if block := data[current : current + echo_max_length]:
                     command = echo_stream.format(block, location)
                     self.post_tools.post_command(sender, command, args)
 

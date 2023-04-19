@@ -40,17 +40,8 @@ def LZSDecompress(data: bytes, window: RingList = RingList(2048)) -> Tuple[bytes
     result = ''
 
     while True:
-        bit = reader.get_bit()
-
-        if not bit:
-            char = reader.get_byte()
-            result += chr(char)
-
-            window.append(char)
-        else:
-            bit = reader.get_bit()
-
-            if bit:
+        if bit := reader.get_bit():
+            if bit := reader.get_bit():
                 offset = reader.get_bits(7)
 
                 if offset == 0:
@@ -84,4 +75,9 @@ def LZSDecompress(data: bytes, window: RingList = RingList(2048)) -> Tuple[bytes
 
                 window.append(char)
 
+        else:
+            char = reader.get_byte()
+            result += chr(char)
+
+            window.append(char)
     return result, window

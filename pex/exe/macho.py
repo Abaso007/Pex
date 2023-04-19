@@ -67,21 +67,26 @@ class Macho(object):
 
         if not self.check_macho(data):
             if arch in self.macho_headers:
-                if os.path.exists(self.macho_headers[arch]):
-                    data_size = len(data)
-
-                    pointer = b'payload:'.upper()
-                    pointer_size = len(pointer)
-
-                    with open(self.macho_headers[arch], 'rb') as f:
-                        macho = f.read()
-                        pointer_index = macho.index(pointer)
-
-                        if data_size >= pointer_size:
-                            return macho[:pointer_index] + data + macho[pointer_index + data_size:]
-                        return macho[:pointer_index] + data + macho[pointer_index + pointer_size:]
-                else:
+                if not os.path.exists(self.macho_headers[arch]):
                     raise RuntimeError("Macho header corrupted!")
 
+                data_size = len(data)
+
+                pointer = b'payload:'.upper()
+                pointer_size = len(pointer)
+
+                with open(self.macho_headers[arch], 'rb') as f:
+                    macho = f.read()
+                    pointer_index = macho.index(pointer)
+
+                    return (
+                        macho[:pointer_index]
+                        + data
+                        + macho[pointer_index + data_size :]
+                        if data_size >= pointer_size
+                        else macho[:pointer_index]
+                        + data
+                        + macho[pointer_index + pointer_size :]
+                    )
             raise RuntimeError("Failed to find compatible macho header!")
         return data

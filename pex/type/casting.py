@@ -52,9 +52,7 @@ class Casting(object):
             r":[a-f\d]{1,2}$"
         )
 
-        if re.match(regexp, mac.lower()):
-            return True
-        return False
+        return bool(re.match(regexp, mac.lower()))
 
     @staticmethod
     def is_ipv4(ipv4: str) -> bool:
@@ -69,9 +67,7 @@ class Casting(object):
             "{3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
         )
 
-        if re.match(regexp, ipv4):
-            return True
-        return False
+        return bool(re.match(regexp, ipv4))
 
     @staticmethod
     def is_ipv6(ipv6: str) -> bool:
@@ -85,9 +81,7 @@ class Casting(object):
             "^(?:(?:[0-9A-Fa-f]{1,4}:){6}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|::(?:[0-9A-Fa-f]{1,4}:){5}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){4}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){3}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,2}[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){2}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,3}[0-9A-Fa-f]{1,4})?::[0-9A-Fa-f]{1,4}:(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,4}[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,5}[0-9A-Fa-f]{1,4})?::[0-9A-Fa-f]{1,4}|(?:(?:[0-9A-Fa-f]{1,4}:){,6}[0-9A-Fa-f]{1,4})?::)%.*$"
         )
 
-        if re.match(regexp, ipv6):
-            return True
-        return False
+        return bool(re.match(regexp, ipv6))
 
     def is_ip(self, ip: str) -> bool:
         """ Check if string is an IPv4 or an IPv6 address.
@@ -96,9 +90,7 @@ class Casting(object):
         :return bool: True if string is an IPv4 or an IPv6 address
         """
 
-        if self.is_ipv4(ip) or self.is_ipv6(ip):
-            return True
-        return False
+        return bool(self.is_ipv4(ip) or self.is_ipv6(ip))
 
     def is_ipv4_cidr(self, ipv4_cidr: str) -> bool:
         """ Check if string is an IPv4 cidr.
@@ -109,10 +101,11 @@ class Casting(object):
 
         cidr = ipv4_cidr.split('/')
 
-        if len(cidr) == 2:
-            if self.is_ipv4(cidr[0]) and int(cidr[1]) in range(0, 32 + 1):
-                return True
-        return False
+        return bool(
+            len(cidr) == 2
+            and self.is_ipv4(cidr[0])
+            and int(cidr[1]) in range(32 + 1)
+        )
 
     def is_ipv6_cidr(self, ipv6_cidr: str) -> bool:
         """ Check if string is an IPv6 cidr.
@@ -123,10 +116,11 @@ class Casting(object):
 
         cidr = ipv6_cidr.split('/')
 
-        if len(cidr) == 2:
-            if self.is_ipv6(cidr[0]) and int(cidr[1]) in range(0, 64 + 1):
-                return True
-        return False
+        return bool(
+            len(cidr) == 2
+            and self.is_ipv6(cidr[0])
+            and int(cidr[1]) in range(64 + 1)
+        )
 
     def is_port(self, port: int) -> bool:
         """ Check if integer is a port.
@@ -135,10 +129,7 @@ class Casting(object):
         :return bool: True if integer is a port
         """
 
-        if self.is_integer(port):
-            if 0 < int(port) <= 65535:
-                return True
-        return False
+        return bool(self.is_integer(port) and 0 < port <= 65535)
 
     def is_port_range(self, port_range: str) -> bool:
         """ Check if string is a port range.
@@ -149,11 +140,12 @@ class Casting(object):
 
         value = port_range.split('-')
 
-        if len(value) == 2:
-            if int(value[0]) <= int(value[1]):
-                if self.is_port(value[0]) and self.is_port(value[1]):
-                    return True
-        return False
+        return bool(
+            len(value) == 2
+            and int(value[0]) <= int(value[1])
+            and self.is_port(value[0])
+            and self.is_port(value[1])
+        )
 
     @staticmethod
     def is_integer(value: str) -> bool:
@@ -163,12 +155,9 @@ class Casting(object):
         :return bool: True if string is an integer else False
         """
 
-        value = str(value)
+        value = value
 
-        if value.isdigit():
-            return True
-
-        return False
+        return value.isdigit()
 
     @staticmethod
     def is_float(value: str) -> bool:
@@ -178,10 +167,8 @@ class Casting(object):
         :return bool: True if string is a float else False
         """
 
-        value = str(value)
-        if re.match(r'^-?\d+(?:\.\d+)$', value):
-            return True
-        return False
+        value = value
+        return bool(re.match(r'^-?\d+(?:\.\d+)$', value))
 
     def is_number(self, value: str) -> bool:
         """ Check if string is a number (float/int).
@@ -190,9 +177,7 @@ class Casting(object):
         :return bool: True if string is a number else False
         """
 
-        if self.is_integer(value) or self.is_float(value):
-            return True
-        return False
+        return bool(self.is_integer(value) or self.is_float(value))
 
     @staticmethod
     def is_boolean(value: str) -> bool:
@@ -203,6 +188,4 @@ class Casting(object):
         """
 
         value = value.lower()
-        if value in ['yes', 'no', 'y', 'n']:
-            return True
-        return False
+        return value in {'yes', 'no', 'y', 'n'}
